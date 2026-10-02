@@ -1,0 +1,79 @@
+<?php
+
+namespace App;
+
+use InvalidArgumentException;
+
+class Jogador
+{
+    private int $vida;
+
+    public function __construct(
+        private string $nome,
+        private Mochila $garibaldo
+    ) {
+        $this->vida = 100;
+
+        if (trim($this->nome) === "") {
+            throw new InvalidArgumentException("Insira um nome válido");
+        }
+    }
+
+    public function status(): string
+    {
+        return "{$this->nome} | Vida: {$this->vida}/100 | Mochila: {$this->garibaldo->getPesoOcupado()}/{$this->garibaldo->getCapacidade()}";
+    }
+
+    public function adicionarPeso(float $peso): bool
+    {
+        return $this->garibaldo->adicionarPeso($peso);
+    }
+}
+
+class Mochila
+{
+    public function __construct(
+        private float $capacidade,
+        private float $pesoOcupado = 0
+    ) {
+        if ($this->capacidade <= 0) {
+            throw new InvalidArgumentException(
+                "A capacidade deve ser positiva"
+            );
+        }
+    }
+
+    public function adicionarPeso(float $peso): bool
+    {
+        if (
+            $peso <= 0 ||
+            $peso + $this->pesoOcupado > $this->capacidade
+        ) {
+            return false;
+        }
+
+        $this->pesoOcupado += $peso;
+
+        return true;
+    }
+
+    public function getPesoOcupado(): float
+    {
+        return $this->pesoOcupado;
+    }
+
+    public function getCapacidade(): float
+    {
+        return $this->capacidade;
+    }
+}
+
+$mochila = new Mochila(30);
+
+$jogador = new Jogador("Valdir", $mochila);
+
+echo $jogador->status() . PHP_EOL;
+
+$mochila->adicionarPeso(10);
+
+echo $jogador->status();
