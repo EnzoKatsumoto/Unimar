@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+
+typedef struct no{
+    int info;
+    struct no *prox; // Precisamos utilizar struct no pois estamos definindo o tipo no então para referenciar o mesmo é necessário utilizar struct
+    } no;
+    
+    
+no* inicializa(){ // Inicializa a lista vazia
+    return NULL; 
+}
+
+no* insere_inicio(no *inicio, int valor){
+    no *novo;
+    
+    novo = malloc(sizeof(no)); //aloca memória para o novo nó
+    novo->info = valor; //armazena o valor
+    novo->prox = inicio; //aponta para o nó que era o antigo inicio
+    return novo; //retorna o novo nó como o novo início da lista
+    }
+
+no* insere_final(no *inicio, int valor){ // Insere um valor no final da "lista"
+    no *aux, *novo;
+    
+    novo = malloc(sizeof(no));
+    
+    novo->info = valor;
+    novo->prox = NULL;
+    
+    if (inicio == NULL){
+        return novo;
+    }
+    
+    aux = inicio;
+    
+    while (aux->prox != NULL){
+        aux = aux->prox;
+    }
+    aux->prox = novo;
+    
+    return inicio;
+}
+
+no* remove_inicio(no *inicio){ // Remove um valor no inicio da "lista"
+    no *aux;
+    
+    if (inicio == NULL)
+        printf("Lista vazia!\n");
+    
+    else {
+        aux = inicio;
+        inicio = aux->prox;
+        free(aux);
+    }
+    return inicio;
+}
+
+no* remove_final(no *inicio){
+    no *aux;
+    
+    if (inicio == NULL){
+        printf("A lista está vazia.\n");
+        return NULL;
+    }
+    
+    if (inicio->prox == NULL){
+        free(inicio);
+        return NULL;
+    }
+    
+    aux = inicio;
+    
+    while(aux->prox->prox != NULL){ // Parando no penultimo nó
+        aux = aux->prox;
+    }
+    free (aux->prox);
+    aux->prox = NULL; // penultimo nó agora aponta para NULL
+    return inicio;
+}
+
+void buscar_valor(no *inicio, int valor){
+    no *aux;
+    
+    if (inicio == NULL){
+        printf("A lista está vazia.\n");
+        return
+    }
+    
+    aux = inicio;
+    while (aux->prox != NULL){
+        if (aux->info == valor){
+            printf("\nValor %d encontrado\n", valor);
+            return;
+        }
+        aux = aux->prox;
+    }
+    printf("\nValor %d não encontrado.\n", valor);
+}
+
+no* exibir_lista(no *inicio){
+    no *aux;
+    
+    if (inicio == NULL){
+        printf("A lista está vazia.\n");
+    }
+    aux = inicio;
+    
+    while (aux->prox != NULL){
+        printf("%d -> ", aux->info);
+    }
+    printf("Null");
+}
+
+no* destroi_lista(no *inicio){
+    no *aux, *aux2;
+    
+    aux = inicio;
+    
+    while (aux != NULL){
+        aux2 = aux->prox;
+        free(aux);
+        aux = aux2;
+    }
+}
