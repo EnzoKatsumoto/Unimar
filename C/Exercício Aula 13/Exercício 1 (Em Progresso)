@@ -2,97 +2,92 @@
 #include <stdlib.h>
 #include <locale.h>
 
-
-typedef struct no{
+typedef struct no {
     int info;
-    struct no *prox; // Precisamos utilizar struct no pois estamos definindo o tipo no então para referenciar o mesmo é necessário utilizar struct
-    } no;
-    
-    
-no* inicializa(){ // Inicializa a lista vazia
-    return NULL; 
+    struct no *prox;
+} no;
+
+no* inicializa() {
+    return NULL;
 }
 
-no* insere_inicio(no *inicio, int valor){
+no* insere_inicio(no *inicio, int valor) {
     no *novo;
-    
-    novo = malloc(sizeof(no)); //aloca memória para o novo nó
-    novo->info = valor; //armazena o valor
-    novo->prox = inicio; //aponta para o nó que era o antigo inicio
-    return novo; //retorna o novo nó como o novo início da lista
-    }
-
-no* insere_final(no *inicio, int valor){ // Insere um valor no final da "lista"
-    no *aux, *novo;
-    
     novo = malloc(sizeof(no));
-    
+    novo->info = valor;
+    novo->prox = inicio;
+    return novo;
+}
+
+no* insere_final(no *inicio, int valor) {
+    no *aux, *novo;
+    novo = malloc(sizeof(no));
     novo->info = valor;
     novo->prox = NULL;
-    
-    if (inicio == NULL){
+
+    if (inicio == NULL) {
         return novo;
     }
-    
+
     aux = inicio;
-    
-    while (aux->prox != NULL){
+    while (aux->prox != NULL) {
         aux = aux->prox;
     }
     aux->prox = novo;
-    
+
     return inicio;
 }
 
-no* remove_inicio(no *inicio){ // Remove um valor no inicio da "lista"
+no* remove_inicio(no *inicio) {
     no *aux;
-    
-    if (inicio == NULL)
+
+    if (inicio == NULL) {
         printf("Lista vazia!\n");
-    
-    else {
+    } else {
         aux = inicio;
         inicio = aux->prox;
         free(aux);
+        printf("Elemento removido do início com sucesso.\n");
     }
     return inicio;
 }
 
-no* remove_final(no *inicio){
+no* remove_final(no *inicio) {
     no *aux;
-    
-    if (inicio == NULL){
+
+    if (inicio == NULL) {
         printf("A lista está vazia.\n");
         return NULL;
     }
-    
-    if (inicio->prox == NULL){
+
+    if (inicio->prox == NULL) {
         free(inicio);
+        printf("Elemento removido do final com sucesso.\n");
         return NULL;
     }
-    
+
     aux = inicio;
-    
-    while(aux->prox->prox != NULL){ // Parando no penultimo nó
+    while (aux->prox->prox != NULL) {
         aux = aux->prox;
     }
-    free (aux->prox);
-    aux->prox = NULL; // penultimo nó agora aponta para NULL
+    free(aux->prox);
+    aux->prox = NULL;
+    printf("Elemento removido do final com sucesso.\n");
     return inicio;
 }
 
-void buscar_valor(no *inicio, int valor){
+void buscar_valor(no *inicio, int valor) {
     no *aux;
-    
-    if (inicio == NULL){
+
+    if (inicio == NULL) {
         printf("A lista está vazia.\n");
-        return
+        return;
     }
-    
+
     aux = inicio;
-    while (aux->prox != NULL){
-        if (aux->info == valor){
-            printf("\nValor %d encontrado\n", valor);
+    while (aux != NULL) {
+        if (aux->info == valor) {
+            printf("\nValor %d encontrado!\n", valor);
             return;
         }
         aux = aux->prox;
@@ -100,28 +95,91 @@ void buscar_valor(no *inicio, int valor){
     printf("\nValor %d não encontrado.\n", valor);
 }
 
-no* exibir_lista(no *inicio){
+void exibir_lista(no *inicio) {
     no *aux;
-    
-    if (inicio == NULL){
+
+    if (inicio == NULL) {
         printf("A lista está vazia.\n");
+        return;
     }
+
     aux = inicio;
-    
-    while (aux->prox != NULL){
+    printf("Lista: ");
+    while (aux != NULL) {
         printf("%d -> ", aux->info);
+        aux = aux->prox; // Correção: avançava o ponteiro para evitar loop infinito
     }
-    printf("Null");
+    printf("NULL\n");
 }
 
-no* destroi_lista(no *inicio){
+no* destroi_lista(no *inicio) {
     no *aux, *aux2;
-    
     aux = inicio;
-    
-    while (aux != NULL){
+
+    while (aux != NULL) {
         aux2 = aux->prox;
         free(aux);
         aux = aux2;
     }
+    return NULL;
+}
+
+int main() {
+    setlocale(LC_ALL, "Portuguese");
+    no *lista = inicializa();
+    int opcao, valor;
+
+    do {
+        printf("\n============================\n");
+        printf("      MENU LISTA ENCADEADA   \n");
+        printf("============================\n");
+        printf("1. Inserir no início\n");
+        printf("2. Inserir no final\n");
+        printf("3. Remover do início\n");
+        printf("4. Remover do final\n");
+        printf("5. Exibir lista\n");
+        printf("0. Destruir a lista e encerrar\n");
+        printf("----------------------------\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o valor a ser inserido no início: ");
+                scanf("%d", &valor);
+                lista = insere_inicio(lista, valor);
+                break;
+
+            case 2:
+                printf("Digite o valor a ser inserido no final: ");
+                scanf("%d", &valor);
+                lista = insere_final(lista, valor);
+                break;
+
+            case 3:
+                lista = remove_inicio(lista);
+                break;
+
+            case 4:
+                lista = remove_final(lista);
+                break;
+
+            case 5:
+                exibir_lista(lista);
+                break;
+
+            case 0:
+                lista = destroi_lista(lista);
+                printf("\nLista destruída com sucesso. Encerrando o programa...\n");
+                break;
+
+            default:
+                printf("\nOpção inválida! Tente novamente entre 0 e 5.\n");
+        }
+        system("pause");
+        system("cls");
+
+    } while (opcao != 0);
+
+    return 0;
 }
