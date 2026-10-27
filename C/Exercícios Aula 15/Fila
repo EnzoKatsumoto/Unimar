@@ -1,0 +1,148 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef _WIN32
+    #define sysclear() system("cls")
+    #define syspause() system("pause")
+#else
+    #define sysclear() system("clear")
+    #define syspause() do { \
+        printf("\nPressione ENTER para continuar..."); \
+        getchar(); \
+    } while (0)
+#endif
+
+typedef struct no {
+    int info;
+    struct no *prox;
+} No;
+
+typedef struct fila {
+    No *inicio;
+    No *final;
+} Fila;
+
+void enfileirar(Fila *f, int valor) {
+    No *novo = (No *) malloc(sizeof(No));
+
+    if (novo == NULL) {
+        printf("Erro ao alocar memoria!\n");
+        return;
+    }
+
+    novo->info = valor;
+    novo->prox = NULL;
+
+    if (f->inicio == NULL) {
+        f->inicio = novo;
+        f->final = novo;
+    } else {
+        f->final->prox = novo;
+        f->final = novo;
+    }
+}
+
+void desenfileirar(Fila *f) {
+    if (f->inicio == NULL) {
+        printf("A fila esta vazia!\n");
+        return;
+    }
+
+    No *aux = f->inicio;
+
+    printf("Elemento removido: %d\n", aux->info);
+
+    f->inicio = f->inicio->prox;
+
+    if (f->inicio == NULL)
+        f->final = NULL;
+
+    free(aux);
+}
+
+void exibir(Fila *f) {
+    No *aux = f->inicio;
+
+    if (aux == NULL) {
+        printf("A fila esta vazia!\n");
+        return;
+    }
+
+    printf("\nInicio -> ");
+
+    while (aux != NULL) {
+        printf("%d -> ", aux->info);
+        aux = aux->prox;
+    }
+
+    printf("NULL\n");
+}
+
+void liberar(Fila *f) {
+    No *aux;
+
+    while (f->inicio != NULL) {
+        aux = f->inicio;
+        f->inicio = f->inicio->prox;
+        free(aux);
+    }
+
+    f->final = NULL;
+
+    printf("Memoria da fila liberada!\n");
+}
+
+int main(void) {
+    Fila f = {NULL, NULL};
+    int opcao, valor;
+
+    do {
+        sysclear();
+
+        printf("===== FILA DINAMICA =====\n");
+        printf("1 - Enfileirar\n");
+        printf("2 - Desenfileirar\n");
+        printf("3 - Exibir fila\n");
+        printf("4 - Liberar memoria\n");
+        printf("0 - Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &opcao);
+
+        sysclear();
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o valor: ");
+                scanf("%d", &valor);
+                enfileirar(&f, valor);
+                break;
+
+            case 2:
+                desenfileirar(&f);
+                break;
+
+            case 3:
+                exibir(&f);
+                break;
+
+            case 4:
+                liberar(&f);
+                break;
+
+            case 0:
+                liberar(&f);
+                printf("Encerrando...\n");
+                break;
+
+            default:
+                printf("Opcao invalida!\n");
+        }
+
+        if (opcao != 0)
+            syspause();
+
+    } while (opcao != 0);
+
+    return 0;
+}
