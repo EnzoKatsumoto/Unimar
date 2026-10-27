@@ -1,18 +1,3 @@
-
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef _WIN32
-    #define sysclear() system("cls")
-    #define syspause() system("pause")
-#else
-    #define sysclear() system("clear")
-    #define syspause() do { \
-        printf("\nPressione ENTER para continuar..."); \
-        getchar(); \
-    } while (0)
-#endif
-
 typedef struct no {
     int info;
     struct no *prox;
@@ -93,10 +78,11 @@ void liberar(Fila *f) {
     printf("Memoria da fila liberada!\n");
 }
 
-int main(void) {
+void main() {
     Fila f = {NULL, NULL};
     int opcao, valor;
-
+    
+    
     do {
         sysclear();
 
@@ -138,9 +124,8 @@ int main(void) {
             default:
                 printf("Opcao invalida!\n");
         }
-
-        if (opcao != 0)
-            syspause();
+        system(pause);
+        system(cls);
 
     } while (opcao != 0);
 
