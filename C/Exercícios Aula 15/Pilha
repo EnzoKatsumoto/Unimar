@@ -1,23 +1,133 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct{
+#ifdef _WIN32
+    #define sysclear() system("cls")
+    #define syspause() system("pause")
+#else
+    #define sysclear() system("clear")
+    #define syspause() do { \
+        printf("\nPressione ENTER para continuar..."); \
+        getchar(); \
+    } while (0)
+#endif
 
-    float info;
+typedef struct no {
+    int info;
     struct no *prox;
-
 } No;
 
-No *inicializa(){
+No *push(No *topo, int valor) {
+    No *novo = (No *) malloc(sizeof(No));
 
+    if (novo == NULL) {
+        printf("Erro ao alocar memoria!\n");
+        return topo;
+    }
+
+    novo->info = valor;
+    novo->prox = topo;
+
+    return novo;
+}
+
+No *pop(No *topo) {
+    if (topo == NULL) {
+        printf("A pilha esta vazia!\n");
+        return topo;
+    }
+
+    No *aux = topo;
+    printf("Elemento removido: %d\n", aux->info);
+
+    topo = topo->prox;
+    free(aux);
+
+    return topo;
+}
+
+void exibir(No *topo) {
+    No *aux = topo;
+
+    if (topo == NULL) {
+        printf("A pilha esta vazia!\n");
+        return;
+    }
+
+    printf("\nTopo -> ");
+
+    while (aux != NULL) {
+        printf("%d -> ", aux->info);
+        aux = aux->prox;
+    }
+
+    printf("NULL\n");
+}
+
+No *liberar(No *topo) {
+    No *aux;
+
+    while (topo != NULL) {
+        aux = topo;
+        topo = topo->prox;
+        free(aux);
+    }
+
+    printf("Memoria da pilha liberada!\n");
     return NULL;
 }
 
-No *push(No *topo, float valor){
-    No *novo;
-    novo = malloc(sizeof(No));
-    novo->info = valor;
-    novo->prox = topo;
-    
+int main(void) {
+    No *topo = NULL;
+    int opcao, valor;
 
+    do {
+        sysclear();
+
+        printf("===== PILHA DINAMICA =====\n");
+        printf("1 - Push\n");
+        printf("2 - Pop\n");
+        printf("3 - Exibir pilha\n");
+        printf("4 - Liberar memoria\n");
+        printf("0 - Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &opcao);
+
+        sysclear();
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o valor: ");
+                scanf("%d", &valor);
+                topo = push(topo, valor);
+                break;
+
+            case 2:
+                topo = pop(topo);
+                break;
+
+            case 3:
+                exibir(topo);
+                break;
+
+            case 4:
+                topo = liberar(topo);
+                break;
+
+            case 0:
+                topo = liberar(topo);
+                printf("Encerrando...\n");
+                break;
+
+            default:
+                printf("Opcao invalida!\n");
+        }
+
+        if (opcao != 0)
+            syspause();
+
+    } while (opcao != 0);
+
+    return 0;
 }
