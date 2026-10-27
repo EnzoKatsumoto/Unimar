@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct{
+
+    float info;
+    struct no *prox;
+
+} No;
+
+No *inicializa(){
+
+    return NULL;
+}
+
+No *push(No *topo, float valor){
+    No *novo;
+    novo = malloc(sizeof(No));
+    novo->info = valor;
+    novo->prox = topo;
+    
+
+}
