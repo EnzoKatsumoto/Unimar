@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+int sGauss(int n){
+    if (n == 1){
+        return 1;
+    }
+    else return n + sGauss(n-1);
+}
+
+void main(){
+    setlocale(LC_ALL, "portuguese");
+
+    printf("Digite o número que você quer descobrir a soma de Gauss: ");
+    int n;
+    scanf("%d", &n);
+    printf("\n");
+
+    printf("A soma de 1 até %d é: %d", n, sGauss(n));
+
+}
