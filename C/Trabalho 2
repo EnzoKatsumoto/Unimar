@@ -133,4 +133,18 @@ void exibir_lista(extremidades *e){
     }
 }
 
-void busca_atualiza(extremidades *e){}
+void busca_atualiza(extremidades *e, int valor_buscado){
+    no *aux;
+    int contador = 0;
+    aux = e->inicio;
+    while (aux != e->fim){
+        aux = aux->prox;
+        if(aux->info != valor_buscado){
+                contador++;
+        }
+        else{
+            contador++;
+            printf("O valor %d foi encontrado na %d° posição lógica.\n", valor_buscado, contador);
+        }
+    }
+}
