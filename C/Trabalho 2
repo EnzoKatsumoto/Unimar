@@ -1,0 +1,136 @@
+#include <stdio.h>
+#include <locale.h>
+#include <stdlib.h>
+
+typedef struct no{  // Criando o "esqueleto" dos nós da lista simplesmente encadeada
+    int info;
+    struct no *prox;
+}no
+
+typedef struct extremidades{ // Criando os ponteiros que irão apontar para o "primeiro" e "último" nó
+    no *inicio;
+    no *fim;
+} extremidades;
+
+extremidades inicializar(){
+    extremidades e; // Variável local e do tipo extremidades
+
+    e.inicio = NULL;
+    e.fim = NULL;
+
+    return e;
+}
+
+
+void inserir_inicio(extremidades *e, int valor){
+    no* novo;
+    if (e->inicio == NULL && e->fim == NULL){
+        novo = malloc(sizeof(no));
+        novo->info = valor;
+        e->inicio = novo;
+        e->fim = novo;
+        novo->prox = novo;
+    }
+    else{
+
+        novo = malloc(sizeof(no));
+        novo->info = valor;
+        novo->prox = inicio;
+        e->inicio = novo;
+        e->fim->prox = novo;
+    }
+
+}
+
+void inserir_fim(extremidades *e, int valor){
+    no* novo;
+    if (e->inicio == NULL && e->fim == NULL){
+        novo = malloc(sizeof(no));
+        novo->info = valor;
+        e->inicio = novo;
+        e->fim = novo;
+        novo->prox = novo;
+    }
+    else{
+
+        no *aux;
+        aux = e->fim;
+        novo = malloc(sizeof(no));
+        novo->info = valor;
+        e->fim = novo;
+        aux->prox = e->fim;
+        novo->prox = e->inicio;
+
+    }
+}
+
+void remover_inicio(extremidades *e){
+    if (e->inicio == NULL && e->fim == NULL){
+        printf("A lista está vazia\n");
+        return;
+    }
+    if (e->inicio == e->fim){// verifica se há apenas um elemento na lista
+        no *aux;
+        aux = e->inicio;
+        e->inicio = NULL;
+        e->fim = NULL;
+        free(aux);
+    }
+    else{
+     no *aux;
+     aux = e->inicio;
+     e->inicio = e->inicio->prox;
+     e->fim->prox = e->inicio;
+     free(aux);
+     }
+
+}
+
+void remover_fim(extremidades *e){
+    if (e->inicio == NULL && e->fim == NULL){
+        printf("A lista está vazia\n");
+        return;
+    }
+
+    if (e->inicio == e->fim){
+        no *aux;
+        aux = e->inicio;
+        e->inicio = NULL;
+        e->fim = NULL;
+        free(aux);
+    }
+
+    else{
+        no *aux;
+        aux = e->fim;
+        e->fim = e->inicio; // fim aponta para inicio
+        while (e->fim->prox != aux){
+            e->fim = e->fim->prox; // utilizamos aux para o ponteiro fim apontar para o seu nó anterior, assim podemos liberar aux.
+        }
+        e->fim->prox = e->inicio;
+        free(aux);
+    }
+}
+
+void exibir_lista(extremidades *e){
+    if (e->inicio == NULL && e->fim == NULL){ // verifica se a lista está vazia
+        printf("A lista está vazia.\n");
+        return;
+    }
+    if (e->inicio == e->fim){
+        printf(" %d repetição...", e->inicio->info); // verifica se a lista possui apenas um elemento.
+    }
+    else{
+
+
+    no *aux;
+    aux = e->inicio;
+    while (aux->prox != e->inicio){
+            printf(" %d ->", aux->info;
+            aux = aux->prox;
+        }
+    printf("\n repetição...");
+    }
+}
+
+void busca_atualiza(extremidades *e){}
