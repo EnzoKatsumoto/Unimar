@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+int potencia(int a, int b){
+    if (b == 0){
+        return 1;
+    }
+    else{
+        return a * potencia(a, b-1);
+    }
+}
+
+void main(){
+    setlocale(LC_ALL, "portuguese");
+    int a, b;
+    printf("Digite A: ");
+    scanf("%d", &a);
+    printf("\nDigite B: ");
+    scanf("%d", &b);
+
+    printf("O resultado de %d elevado a %d é %d", a, b, potencia(a, b));
+
+
+}
