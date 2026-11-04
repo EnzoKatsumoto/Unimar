@@ -13,7 +13,7 @@ typedef struct extremidades{ // Criando os ponteiros que irão apontar para o "p
 } extremidades;
 
 extremidades inicializar(){
-    extremidades e; // Variável local e do tipo extremidades
+    extremidades e; // Encapsulamento dos ponteiros inicio e fim
 
     e.inicio = NULL;
     e.fim = NULL;
