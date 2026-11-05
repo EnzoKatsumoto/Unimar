@@ -142,9 +142,13 @@ void busca_atualiza(extremidades *e, int valor_buscado){
         if(aux->info != valor_buscado){
                 contador++;
         }
-        else{
+        if (aux->info == valor_buscado{
             contador++;
             printf("O valor %d foi encontrado na %d° posição lógica.\n", valor_buscado, contador);
         }
+    }
+    else
+    {
+        printf("O valor %d não está presente na lista.", valor_buscado)
     }
 }
