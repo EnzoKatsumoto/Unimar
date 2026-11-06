@@ -5,7 +5,7 @@
 typedef struct no{  // Criando o "esqueleto" dos nós da lista simplesmente encadeada
     int info;
     struct no *prox;
-}no
+}no;
 
 typedef struct extremidades{ // Criando os ponteiros que irão apontar para o "primeiro" e "último" nó
     no *inicio;
@@ -35,7 +35,7 @@ void inserir_inicio(extremidades *e, int valor){
 
         novo = malloc(sizeof(no));
         novo->info = valor;
-        novo->prox = inicio;
+        novo->prox = e->inicio;
         e->inicio = novo;
         e->fim->prox = novo;
     }
@@ -118,7 +118,7 @@ void exibir_lista(extremidades *e){
         return;
     }
     if (e->inicio == e->fim){
-        printf(" %d repetição...", e->inicio->info); // verifica se a lista possui apenas um elemento.
+        printf(" %d repetição...\n", e->inicio->info); // verifica se a lista possui apenas um elemento.
     }
     else{
 
@@ -126,29 +126,134 @@ void exibir_lista(extremidades *e){
     no *aux;
     aux = e->inicio;
     while (aux->prox != e->inicio){
-            printf(" %d ->", aux->info;
+            printf(" %d ->", aux->info);
             aux = aux->prox;
         }
-    printf("\n repetição...");
+    printf(" repetição...\n");
     }
 }
 
-void busca_atualiza(extremidades *e, int valor_buscado){
+void busca_atualiza(extremidades *e, int valor_buscado, int valor_atualizado){
+
+    if (e->inicio == NULL){
+        printf("A lista está vazia.\n");
+        return;
+    }
+
     no *aux;
-    int contador = 0;
+    int encontrado = 0;
+
     aux = e->inicio;
-    while (aux != e->fim){
+
+    do {
+        if (aux->info == valor_buscado){
+
+            aux->info = valor_atualizado;
+
+            printf("O valor %d foi encontrado e substituído por %d.\n",
+                   valor_buscado, valor_atualizado);
+
+            encontrado = 1;
+            break;
+        }
+
         aux = aux->prox;
-        if(aux->info != valor_buscado){
-                contador++;
-        }
-        if (aux->info == valor_buscado{
-            contador++;
-            printf("O valor %d foi encontrado na %d° posição lógica.\n", valor_buscado, contador);
-        }
+
+    } while (aux != e->inicio);
+
+    if (encontrado == 0){
+        printf("O valor %d não está presente na lista.\n", valor_buscado);
     }
-    else
-    {
-        printf("O valor %d não está presente na lista.", valor_buscado)
+}
+
+void liberar_memoria (extremidades *e){
+
+    while (e->inicio != e->fim){
+        no *aux;
+        aux = e->inicio;
+        e->inicio = e->inicio->prox;
+        free(aux);
     }
+    free(e->inicio);
+}
+
+
+
+void main(){
+
+    setlocale(LC_ALL, "Portuguese");
+
+    extremidades e = inicializar();
+
+    int opcao, valor, valor_atualizado;
+
+    do {
+
+        printf("====================================\n");
+        printf("       LISTA CIRCULAR EM C\n");
+        printf("====================================\n");
+
+        printf("\n1 - Inserir no início");
+        printf("\n2 - Inserir no fim");
+        printf("\n3 - Remover do início");
+        printf("\n4 - Remover do fim");
+        printf("\n5 - Exibir lista");
+        printf("\n6 - Buscar elemento");
+        printf("\n0 - Sair");
+
+        printf("\n\nEscolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch(opcao){
+
+            case 1:
+                printf("Digite o valor: ");
+                scanf("%d", &valor);
+
+                inserir_inicio(&e, valor);
+                break;
+
+            case 2:
+                printf("Digite o valor: ");
+                scanf("%d", &valor);
+
+                inserir_fim(&e, valor);
+                break;
+
+            case 3:
+                remover_inicio(&e);
+                break;
+
+            case 4:
+                remover_fim(&e);
+                break;
+
+            case 5:
+                exibir_lista(&e);
+                break;
+
+            case 6:
+                printf("Digite o valor que deseja buscar: ");
+                scanf("%d", &valor);
+
+                printf("\nDigite um valor para substitui-lo: ");
+                scanf("%d", &valor_atualizado);
+
+                busca_atualiza(&e, valor, valor_atualizado);
+                break;
+
+            case 0:
+                liberar_memoria(&e);
+                printf("Encerrando o programa...\n");
+                break;
+
+            default:
+                printf("Opção inválida!\n");
+                break;
+        }
+        system("pause");
+        system("cls");
+
+    } while(opcao != 0);
+
 }
