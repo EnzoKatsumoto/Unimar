@@ -1,0 +1,416 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+typedef struct no {
+    int info;
+    struct no *esq;
+    struct no *dir;
+} no;
+
+
+// --------------------------------------------------
+// INSERIR UM ELEMENTO NA ARVORE
+// --------------------------------------------------
+
+no *inserir(no *raiz, int valor) {
+
+    if (raiz == NULL) {
+        no *novo;
+        novo = malloc(sizeof(no));
+
+        if (novo == NULL) {
+            printf("Erro ao alocar memoria!\n");
+            return NULL;
+        }
+
+        novo->info = valor;
+        novo->esq = NULL;
+        novo->dir = NULL;
+
+        return novo;
+    }
+
+    if (valor < raiz->info) {
+        raiz->esq = inserir(raiz->esq, valor);
+    }
+    else if (valor > raiz->info) {
+        raiz->dir = inserir(raiz->dir, valor);
+    }
+    else {
+        printf("Valor duplicado! Nao foi inserido.\n");
+    }
+
+    return raiz;
+}
+
+
+// --------------------------------------------------
+// PERCURSO PRE-ORDEM
+// --------------------------------------------------
+
+void pre_ordem(no *raiz) {
+
+    if (raiz != NULL) {
+        printf("%d ", raiz->info);
+
+        pre_ordem(raiz->esq);
+        pre_ordem(raiz->dir);
+    }
+}
+
+
+// --------------------------------------------------
+// PERCURSO EM ORDEM
+// --------------------------------------------------
+
+void em_ordem(no *raiz) {
+
+    if (raiz != NULL) {
+
+        em_ordem(raiz->esq);
+
+        printf("%d ", raiz->info);
+
+        em_ordem(raiz->dir);
+    }
+}
+
+
+// --------------------------------------------------
+// PERCURSO POS-ORDEM
+// --------------------------------------------------
+
+void pos_ordem(no *raiz) {
+
+    if (raiz != NULL) {
+
+        pos_ordem(raiz->esq);
+
+        pos_ordem(raiz->dir);
+
+        printf("%d ", raiz->info);
+    }
+}
+
+
+// --------------------------------------------------
+// BUSCAR UM VALOR NA ARVORE
+// --------------------------------------------------
+
+no *buscar(no *raiz, int valor) {
+
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    if (valor == raiz->info) {
+        return raiz;
+    }
+
+    if (valor < raiz->info) {
+        return buscar(raiz->esq, valor);
+    }
+
+    return buscar(raiz->dir, valor);
+}
+
+
+// --------------------------------------------------
+// EXIBIR A ARVORE VISUALMENTE
+// --------------------------------------------------
+
+void exibir(no *raiz, int nivel) {
+
+    if (raiz != NULL) {
+
+        exibir(raiz->dir, nivel + 1);
+
+        printf("%*s%d\n", nivel * 5, "", raiz->info);
+
+        exibir(raiz->esq, nivel + 1);
+    }
+}
+
+
+// --------------------------------------------------
+// ENCONTRAR O MENOR VALOR
+// --------------------------------------------------
+
+no *menor(no *raiz) {
+
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    while (raiz->esq != NULL) {
+        raiz = raiz->esq;
+    }
+
+    return raiz;
+}
+
+
+// --------------------------------------------------
+// ENCONTRAR O MAIOR VALOR
+// --------------------------------------------------
+
+no *maior(no *raiz) {
+
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    while (raiz->dir != NULL) {
+        raiz = raiz->dir;
+    }
+
+    return raiz;
+}
+
+
+// --------------------------------------------------
+// REMOVER UM ELEMENTO DA ARVORE
+// --------------------------------------------------
+
+no *remover(no *raiz, int valor) {
+
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    if (valor < raiz->info) {
+        raiz->esq = remover(raiz->esq, valor);
+    }
+
+    else if (valor > raiz->info) {
+        raiz->dir = remover(raiz->dir, valor);
+    }
+
+    else {
+
+        // CASO 1: NO SEM FILHOS
+
+        if (raiz->esq == NULL && raiz->dir == NULL) {
+            free(raiz);
+            return NULL;
+        }
+
+        // CASO 2: NO COM APENAS FILHO DIREITO
+
+        else if (raiz->esq == NULL) {
+            no *aux = raiz->dir;
+            free(raiz);
+            return aux;
+        }
+
+        // CASO 2: NO COM APENAS FILHO ESQUERDO
+
+        else if (raiz->dir == NULL) {
+            no *aux = raiz->esq;
+            free(raiz);
+            return aux;
+        }
+
+        // CASO 3: NO COM DOIS FILHOS
+
+        else {
+
+            no *aux = menor(raiz->dir);
+
+            raiz->info = aux->info;
+
+            raiz->dir = remover(raiz->dir, aux->info);
+        }
+    }
+
+    return raiz;
+}
+
+
+// --------------------------------------------------
+// LIBERAR A MEMORIA DA ARVORE
+// --------------------------------------------------
+
+void liberar(no *raiz) {
+
+    if (raiz != NULL) {
+
+        liberar(raiz->esq);
+
+        liberar(raiz->dir);
+
+        free(raiz);
+    }
+}
+
+
+// --------------------------------------------------
+// FUNCAO PRINCIPAL
+// --------------------------------------------------
+
+int main() {
+
+    setlocale(LC_ALL, "Portuguese");
+
+    no *raiz = NULL;
+
+    int opcao, valor;
+
+    do {
+
+        printf("\n========== ARVORE BINARIA DE BUSCA ==========\n");
+
+        printf("\n1 - Inserir elemento");
+        printf("\n2 - Percorrer em pre-ordem");
+        printf("\n3 - Percorrer em ordem");
+        printf("\n4 - Percorrer em pos-ordem");
+        printf("\n5 - Buscar valor");
+        printf("\n6 - Exibir arvore");
+        printf("\n7 - Encontrar maior valor");
+        printf("\n8 - Encontrar menor valor");
+        printf("\n9 - Remover elemento");
+        printf("\n0 - Sair");
+
+        printf("\n\nEscolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+
+            case 1:
+
+                printf("\nDigite o valor: ");
+                scanf("%d", &valor);
+
+                raiz = inserir(raiz, valor);
+
+                break;
+
+
+            case 2:
+
+                printf("\nPercurso pre-ordem: ");
+
+                pre_ordem(raiz);
+
+                printf("\n");
+
+                break;
+
+
+            case 3:
+
+                printf("\nPercurso em ordem: ");
+
+                em_ordem(raiz);
+
+                printf("\n");
+
+                break;
+
+
+            case 4:
+
+                printf("\nPercurso pos-ordem: ");
+
+                pos_ordem(raiz);
+
+                printf("\n");
+
+                break;
+
+
+            case 5:
+
+                printf("\nDigite o valor que deseja buscar: ");
+                scanf("%d", &valor);
+
+                if (buscar(raiz, valor) != NULL) {
+                    printf("\nValor encontrado na arvore!\n");
+                }
+                else {
+                    printf("\nValor nao encontrado!\n");
+                }
+
+                break;
+
+
+            case 6:
+
+                if (raiz == NULL) {
+                    printf("\nA arvore esta vazia!\n");
+                }
+                else {
+                    printf("\nArvore:\n\n");
+
+                    exibir(raiz, 0);
+                }
+
+                break;
+
+
+            case 7:
+
+                if (maior(raiz) == NULL) {
+                    printf("\nA arvore esta vazia!\n");
+                }
+                else {
+                    printf("\nMaior valor: %d\n", maior(raiz)->info);
+                }
+
+                break;
+
+
+            case 8:
+
+                if (menor(raiz) == NULL) {
+                    printf("\nA arvore esta vazia!\n");
+                }
+                else {
+                    printf("\nMenor valor: %d\n", menor(raiz)->info);
+                }
+
+                break;
+
+
+            case 9:
+
+                printf("\nDigite o valor que deseja remover: ");
+                scanf("%d", &valor);
+
+                if (buscar(raiz, valor) != NULL) {
+
+                    raiz = remover(raiz, valor);
+
+                    printf("\nValor removido com sucesso!\n");
+                }
+                else {
+                    printf("\nValor nao encontrado!\n");
+                }
+
+                break;
+
+
+            case 0:
+
+                liberar(raiz);
+
+                raiz = NULL;
+
+                printf("\nMemoria liberada! Encerrando programa...\n");
+
+                break;
+
+
+            default:
+
+                printf("\nOpcao invalida!\n");
+
+                break;
+        }
+
+    } while (opcao != 0);
+
+    return 0;
+}
